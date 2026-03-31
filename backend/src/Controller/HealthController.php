@@ -8,11 +8,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class HealthController extends AbstractController
 {
-  #[Route("/api/health", name: "app_health")]
-  public function index(): JsonResponse
-  {
-    return $this->json([
-      "status" => "OK",
-    ]);
-  }
+    #[Route("/api/health", name: "app_health")]
+    public function index(): JsonResponse
+    {
+        return $this->json([
+            "status" => "OK",
+        ]);
+    }
 }

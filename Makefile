@@ -1,4 +1,5 @@
-.PHONY: dev prod down logs ps build clean
+.PHONY: dev dev-d prod prod-d down down-v logs logs-front logs-back logs-nginx ps build-dev build-prod clean \
+        migrate migrate-new migrate-rollup fixtures
 
 dev:
 	docker compose -f compose.yaml -f compose.dev.yaml up --build
@@ -41,3 +42,15 @@ build-prod:
 
 clean:
 	docker compose down -v --rmi all --remove-orphans
+
+migrate:
+	docker compose exec backend php /var/www/html/bin/console doctrine:migrations:migrate --no-interaction
+
+migrate-new:
+	docker compose exec backend php /var/www/html/bin/console make:migration
+
+migrate-rollup:
+	docker compose exec backend php /var/www/html/bin/console doctrine:migrations:migrate $(version)
+
+fixtures:
+	docker compose exec backend php /var/www/html/bin/console doctrine:fixtures:load --no-interaction

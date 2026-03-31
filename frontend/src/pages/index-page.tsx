@@ -1,4 +1,7 @@
 import { type FC, useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface HealthResponse {
   status: string;
@@ -24,20 +27,27 @@ export const IndexPage: FC = () => {
   }, []);
 
   return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <h1>Hello, World!</h1>
-      <div
-        style={{ marginTop: "20px", border: "1px solid #ccc", padding: "10px" }}
-      >
-        <h3>Backend Status:</h3>
-        {error && <p style={{ color: "red" }}>Error: {error}</p>}
-        {!error && !data && <p>Loading...</p>}
-        {data && (
-          <pre style={{ background: "#f4f4f4", padding: "10px" }}>
-            {JSON.stringify(data, null, 2)}
-          </pre>
-        )}
-      </div>
+    <div className="p-5 font-sans">
+      <h1 className="text-2xl font-bold">Hello, World!</h1>
+
+      <Card className="mt-5 max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-base">Backend Status</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {error && <Badge variant="destructive">Error: {error}</Badge>}
+          {!error && !data && (
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          )}
+          {data && (
+            <pre className="bg-muted rounded p-3 text-sm">
+              {JSON.stringify(data, null, 2)}
+            </pre>
+          )}
+        </CardContent>
+      </Card>
+
+      <Button className="mt-4">Click me</Button>
     </div>
   );
 };

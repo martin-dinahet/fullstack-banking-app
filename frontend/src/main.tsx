@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { queryClient } from "@/lib/query-client";
 import { IndexPage } from "./pages/index-page";
+import { LoginPage } from "./pages/login-page";
 import { RootLayout } from "./root-layout";
 import "@/globals.css";
 
@@ -19,6 +20,7 @@ createRoot(document.getElementById("root")!).render(
             <Routes>
               <Route path="/" element={<RootLayout />}>
                 <Route index element={<IndexPage />} />
+                <Route path="/auth/login" element={<LoginPage />} />
               </Route>
             </Routes>
           </BrowserRouter>

@@ -7,10 +7,9 @@ export const fetchClient = async <T>(input: RequestInfo | URL, init?: RequestIni
       ...init?.headers,
     },
   });
-
   if (!res.ok) {
     throw new Error(`HTTP error! status: ${res.status}`);
   }
-
-  return (await res.json()) as T;
+  const text = await res.text();
+  return (text ? JSON.parse(text) : null) as T;
 };

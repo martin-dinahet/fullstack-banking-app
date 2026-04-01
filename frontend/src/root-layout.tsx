@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import { Outlet } from "react-router";
+import { Toaster } from "./components/ui/sonner";
 
 export const RootLayout: FC = () => {
   return (
@@ -7,6 +8,7 @@ export const RootLayout: FC = () => {
       <main>
         <Outlet />
       </main>
+      <Toaster />
     </div>
   );
 };

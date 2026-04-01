@@ -29,7 +29,7 @@ export function RegisterForm() {
 
   const onSuccess = () => {
     toast.success("Account created successfully.");
-    navigate("/");
+    navigate("/dashboard");
   };
 
   const onError = (error: string) => {

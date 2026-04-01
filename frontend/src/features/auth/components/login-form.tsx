@@ -29,7 +29,7 @@ export function LoginForm() {
 
   const onSuccess = () => {
     toast.success("Successfully logged into your account.");
-    navigate("/");
+    navigate("/dashboard");
   };
 
   const onError = (error: string) => {

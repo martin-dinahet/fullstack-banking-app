@@ -14,9 +14,7 @@ export const HealthStatus: FC = () => {
       <CardContent>
         {error && <Badge variant="destructive">Error: {error.message}</Badge>}
         {isLoading && <p className="text-sm text-muted-foreground">Loading...</p>}
-        {data && (
-          <pre className="bg-muted rounded p-3 text-sm">{JSON.stringify(data, null, 2)}</pre>
-        )}
+        {data && <pre className="bg-muted rounded p-3 text-sm">{JSON.stringify(data, null, 2)}</pre>}
       </CardContent>
     </Card>
   );

@@ -32,3 +32,13 @@ export async function loginUser(body: LoginRequest): Promise<LoginResponse> {
     body: JSON.stringify(body),
   });
 }
+
+export interface MeResponse {
+  id: number;
+  email: string;
+  roles: string[];
+}
+
+export async function fetchMe(): Promise<MeResponse> {
+  return fetchClient<MeResponse>("/api/me");
+}

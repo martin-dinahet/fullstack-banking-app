@@ -16,3 +16,19 @@ export async function registerUser(body: RegisterRequest): Promise<RegisterRespo
     body: JSON.stringify(body),
   });
 }
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+}
+
+export async function loginUser(body: LoginRequest): Promise<LoginResponse> {
+  return fetchClient<LoginResponse>("/api/login", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}

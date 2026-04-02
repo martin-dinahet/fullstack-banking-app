@@ -99,9 +99,9 @@ jobs:
       - name: Run migrations
         run: php bin/console doctrine:migrations:migrate --env=test --no-interaction
         env:
-          DATABASE_URL: "mysql://mybank:secret@127.0.0.1:3306/mybank_test"
+          DATABASE_URL: "mysql://mybank:secret@127.0.0.1:3306/mybank"
 
       - name: Run PHPUnit
         run: php bin/phpunit --testdox
         env:
-          DATABASE_URL: "mysql://mybank:secret@127.0.0.1:3306/mybank_test"
+          DATABASE_URL: "mysql://mybank:secret@127.0.0.1:3306/mybank"

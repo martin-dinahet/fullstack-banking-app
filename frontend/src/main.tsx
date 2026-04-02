@@ -5,10 +5,14 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { queryClient } from "@/lib/query-client";
+import { AuthGuard } from "./features/auth/components/auth-guard";
+import { GuestGuard } from "./features/auth/components/guest-guard";
 import { IndexPage } from "./pages/index-page";
 import { LoginPage } from "./pages/login-page";
+import { RegisterPage } from "./pages/register-page";
 import { RootLayout } from "./root-layout";
 import "@/globals.css";
+import { DashboardPage } from "./pages/dashboard-page";
 
 // biome-ignore lint/style/noNonNullAssertion: <>
 createRoot(document.getElementById("root")!).render(
@@ -18,9 +22,18 @@ createRoot(document.getElementById("root")!).render(
         <TooltipProvider>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<RootLayout />}>
+              <Route element={<RootLayout />}>
+                {/* Public pages */}
                 <Route index element={<IndexPage />} />
-                <Route path="/auth/login" element={<LoginPage />} />
+                {/* Auth pages (logged in users cannot go) */}
+                <Route element={<GuestGuard />}>
+                  <Route path="/auth/login" element={<LoginPage />} />
+                  <Route path="/auth/register" element={<RegisterPage />} />
+                </Route>
+                {/* Protected pages (non-authenticated users cannot go */}
+                <Route element={<AuthGuard />}>
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                </Route>
               </Route>
             </Routes>
           </BrowserRouter>

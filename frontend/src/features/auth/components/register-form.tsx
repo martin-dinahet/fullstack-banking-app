@@ -1,4 +1,4 @@
-import { IconAlertCircle, IconArrowRight, IconLoader2, IconLock, IconMail } from "@tabler/icons-react";
+import { IconAlertCircle, IconArrowRight, IconLoader2, IconLock, IconMail, IconUser } from "@tabler/icons-react";
 import { useState, useTransition } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -8,10 +8,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { handle } from "@/lib/handle";
-import { useLogin } from "../hooks/use-login";
+import { useRegister } from "../hooks/use-register";
 
-export function LoginForm() {
-  const login = useLogin();
+export function RegisterForm() {
+  const register = useRegister();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -21,14 +21,14 @@ export function LoginForm() {
       setError(null);
       const email = formData.get("email") as string;
       const password = formData.get("password") as string;
-      const { error } = await handle(login.mutateAsync({ email, password }));
+      const { error } = await handle(register.mutateAsync({ email, password }));
       if (!error) return onSuccess();
       onError(error);
     });
   };
 
   const onSuccess = () => {
-    toast.success("Successfully logged into your account.");
+    toast.success("Account created successfully.");
     navigate("/dashboard");
   };
 
@@ -41,8 +41,8 @@ export function LoginForm() {
     <div>
       <Card className="w-xs">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-semibold tracking-tight">Sign in</CardTitle>
-          <CardDescription>Enter your email and password to access your account.</CardDescription>
+          <CardTitle className="text-2xl font-semibold tracking-tight">Create an account</CardTitle>
+          <CardDescription>Enter your details below to get started.</CardDescription>
         </CardHeader>
 
         <form action={onSubmit}>
@@ -53,6 +53,23 @@ export function LoginForm() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
+
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <div className="relative">
+                <IconUser className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="John Doe"
+                  autoComplete="name"
+                  required
+                  disabled={isPending}
+                  className="pl-9"
+                />
+              </div>
+            </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -80,7 +97,7 @@ export function LoginForm() {
                   name="password"
                   type="password"
                   placeholder="••••••••"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                   disabled={isPending}
                   className="pl-9"
@@ -94,17 +111,17 @@ export function LoginForm() {
               {isPending ? (
                 <>
                   <IconLoader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing in…
+                  Creating account…
                 </>
               ) : (
                 <>
-                  Sign in
+                  Create account
                   <IconArrowRight className="ml-2 h-4 w-4" />
                 </>
               )}
             </Button>
             <Button asChild variant="outline" className="w-full">
-              <Link to="/auth/register">Create an account instead</Link>
+              <Link to="/auth/login">Sign in instead</Link>
             </Button>
           </CardFooter>
         </form>

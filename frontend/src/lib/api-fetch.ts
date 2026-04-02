@@ -8,8 +8,11 @@ export const fetchClient = async <T>(input: RequestInfo | URL, init?: RequestIni
     },
   });
   if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`);
+    const text = await res.text();
+    const body = text ? JSON.parse(text) : null;
+    throw new Error(body?.message ?? body?.error ?? "Something went wrong. Please try again.");
   }
+  if (res.status === 204) return null as T;
   const text = await res.text();
   return (text ? JSON.parse(text) : null) as T;
 };

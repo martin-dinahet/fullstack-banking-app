@@ -42,3 +42,7 @@ export interface MeResponse {
 export async function fetchMe(): Promise<MeResponse> {
   return fetchClient<MeResponse>("/api/me");
 }
+
+export async function logoutUser() {
+  return fetchClient<void>("/api/logout", { method: "POST" });
+}

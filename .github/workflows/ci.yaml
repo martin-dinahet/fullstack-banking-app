@@ -85,6 +85,9 @@ jobs:
           php-version: "8.4"
           extensions: pdo, pdo_mysql
 
+      - name: Create .env file
+        run: cp .env.test .env
+
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 

@@ -1,14 +1,12 @@
-import { Navigate } from "react-router";
 import type { ReactNode } from "react";
+import { Navigate } from "react-router";
 import { useAuth } from "@/lib/auth-context";
 
 export const GuestGuard = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
-
   if (isLoading) {
     return null;
   }
-
   if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }
@@ -18,11 +16,9 @@ export const GuestGuard = ({ children }: { children: ReactNode }) => {
 
 export const AuthGuard = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
-
   if (isLoading) {
     return null;
   }
-
   if (!isAuthenticated) {
     return <Navigate to="/sign-in" replace />;
   }

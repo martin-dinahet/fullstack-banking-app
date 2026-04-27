@@ -1,26 +1,16 @@
-import { useNavigate } from "react-router";
-import { toast } from "sonner";
-import type { Result } from "@/lib/types/result";
-import { handle } from "@/lib/handle";
-import { userKeys } from "../features/auth/hooks";
-import { Button } from "@/components/ui/button";
-import { queryClient } from "@/lib/query-client";
 import { IconLogout } from "@tabler/icons-react";
-import { fetchLogout } from "../features/auth/api/auth.api";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import { setAuthToken } from "@/lib/api-fetch";
+import { handle } from "@/lib/handle";
+import { fetchLogout } from "../features/auth/api/auth.api";
 
 export const LogoutButton = () => {
-  const navigate = useNavigate();
-
   const handleLogout = async () => {
-    const result: Result<void> = await handle(fetchLogout());
-    if (result.error) {
-      return;
-    }
-    toast.success("Logged out successfully");
+    await handle(fetchLogout());
     setAuthToken(null);
-    queryClient.removeQueries({ queryKey: userKeys.me() });
-    navigate("/sign-in");
+    toast.success("Logged out successfully");
+    window.location.href = "/sign-in";
   };
 
   return (

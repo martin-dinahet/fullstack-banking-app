@@ -18,7 +18,7 @@ describe("HealthStatus", () => {
     expect(screen.getByText(/Backend Status/i)).toBeInTheDocument();
   });
 
-  it("shows an error message when the API fails", async () => {
+  it("shows an error message when the API fails with 500", async () => {
     server.use(
       http.get("/api/health", () => {
         return new HttpResponse(null, { status: 500 });
@@ -27,5 +27,17 @@ describe("HealthStatus", () => {
     renderWithProviders(<HealthStatus />);
     const errorMsg = await screen.findByText(/Error: HTTP error! status: 500/i);
     expect(errorMsg).toBeInTheDocument();
+  });
+
+  it("shows the loading state initially", async () => {
+    server.use(
+      http.get("/api/health", async () => {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        return HttpResponse.json({ status: "ok" });
+      }),
+    );
+    renderWithProviders(<HealthStatus />);
+    const loadingMsg = await screen.findByText(/Loading\.\.\./i);
+    expect(loadingMsg).toBeInTheDocument();
   });
 });

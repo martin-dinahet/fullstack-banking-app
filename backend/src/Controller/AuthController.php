@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -135,5 +136,27 @@ class AuthController extends AbstractController
             "email" => $user->getEmail(),
             "roles" => $user->getRoles(),
         ]);
+    }
+
+    /**
+     * Logs the user out.
+     *
+     * @return JsonResponse
+     */
+    #[Route("/logout", name: "logout", methods: ["POST"])]
+    public function logout(): JsonResponse
+    {
+        $cookie = Cookie::create("jwt")
+            ->withValue("")
+            ->withExpires(new \DateTime("@0"))
+            ->withPath("/")
+            ->withSecure(false)
+            ->withHttpOnly(true)
+            ->withSameSite("strict");
+
+        $response = new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        $response->headers->setCookie($cookie);
+
+        return $response;
     }
 }

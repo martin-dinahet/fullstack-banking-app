@@ -12,6 +12,7 @@ import { IndexPage } from "./pages/index-page";
 import { LoginPage } from "./pages/login-page";
 import { SignUpPage } from "./pages/sign-up-page";
 import "@/globals.css";
+import { DashboardPage } from "./pages/dashboard-page";
 
 // biome-ignore lint/style/noNonNullAssertion: <>
 createRoot(document.getElementById("root")!).render(

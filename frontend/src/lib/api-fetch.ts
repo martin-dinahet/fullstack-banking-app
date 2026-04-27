@@ -21,9 +21,10 @@ export const fetchClient = async <T>(input: RequestInfo | URL, init?: RequestIni
     credentials: "include",
     headers,
   });
-
   if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`);
+    const text = await res.text();
+    const body = text ? JSON.parse(text) : null;
+    throw new Error(body?.message ?? body?.error ?? "Something went wrong. Please try again.");
   }
 
   const text = await res.text();

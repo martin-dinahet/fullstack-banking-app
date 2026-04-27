@@ -152,6 +152,10 @@ class CategoryController extends AbstractController
     {
         $category = $this->findOwnedCategoryOr404($id);
 
+        foreach ($category->getOperations() as $operation) {
+            $this->entityManager->remove($operation);
+        }
+
         $this->entityManager->remove($category);
         $this->entityManager->flush();
 

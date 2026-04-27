@@ -4,7 +4,7 @@ export interface CreateOperationRequest {
   label: string;
   amount: number;
   date: string;
-  category_id: number;
+  category_ids: number[];
 }
 
 export interface OperationCategory {
@@ -17,7 +17,7 @@ export interface CreateOperationResponse {
   label: string;
   amount: number;
   date: string;
-  category: OperationCategory;
+  categories: OperationCategory[];
 }
 
 export async function createOperation(body: CreateOperationRequest): Promise<CreateOperationResponse> {
@@ -53,7 +53,7 @@ export interface UpdateOperationRequest {
   label?: string;
   amount?: number;
   date?: string;
-  category_id?: number;
+  category_ids?: number[];
 }
 
 export async function updateOperation({ id, ...body }: UpdateOperationRequest): Promise<CreateOperationResponse> {

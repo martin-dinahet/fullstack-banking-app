@@ -105,8 +105,8 @@ class AuthController extends AbstractController
         );
     }
 
-    /**
-     * Logout the authenticated user.
+/**
+     * Logs the user out.
      *
      * Returns 204 No Content on success.
      *
@@ -115,7 +115,18 @@ class AuthController extends AbstractController
     #[Route("/logout", name: "logout", methods: ["POST"])]
     public function logout(): JsonResponse
     {
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        $cookie = Cookie::create("jwt")
+            ->withValue("")
+            ->withExpires(new \DateTime("@0"))
+            ->withPath("/")
+            ->withSecure(false)
+            ->withHttpOnly(true)
+            ->withSameSite("strict");
+
+        $response = new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        $response->headers->setCookie($cookie);
+
+        return $response;
     }
 
     /**
@@ -136,27 +147,5 @@ class AuthController extends AbstractController
             "email" => $user->getEmail(),
             "roles" => $user->getRoles(),
         ]);
-    }
-
-    /**
-     * Logs the user out.
-     *
-     * @return JsonResponse
-     */
-    #[Route("/logout", name: "logout", methods: ["POST"])]
-    public function logout(): JsonResponse
-    {
-        $cookie = Cookie::create("jwt")
-            ->withValue("")
-            ->withExpires(new \DateTime("@0"))
-            ->withPath("/")
-            ->withSecure(false)
-            ->withHttpOnly(true)
-            ->withSameSite("strict");
-
-        $response = new JsonResponse(null, Response::HTTP_NO_CONTENT);
-        $response->headers->setCookie($cookie);
-
-        return $response;
     }
 }

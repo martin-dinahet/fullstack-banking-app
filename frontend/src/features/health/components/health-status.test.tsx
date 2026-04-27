@@ -25,7 +25,7 @@ describe("HealthStatus", () => {
       }),
     );
     renderWithProviders(<HealthStatus />);
-    const errorMsg = await screen.findByText(/Error: HTTP error! status: 500/i);
+    const errorMsg = await screen.findByText(/Something went wrong. Please try again./i);
     expect(errorMsg).toBeInTheDocument();
   });
 

@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { LogoutButton } from "@/components/logout-button";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { HealthStatus } from "@/features/health/components/health-status";
@@ -6,7 +7,8 @@ import { HealthStatus } from "@/features/health/components/health-status";
 export const IndexPage: FC = () => {
   return (
     <div className="min-h-screen font-sans p-6">
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        <LogoutButton />
         <ModeToggle />
       </div>
 

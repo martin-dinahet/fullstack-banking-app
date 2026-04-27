@@ -53,3 +53,55 @@ jobs:
 
       - name: Execute Vitest unit tests
         run: npm run test
+
+  test-backend:
+    name: PHPUnit Suite
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      db:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: mybank
+          MYSQL_USER: mybank
+          MYSQL_PASSWORD: secret
+          MYSQL_ROOT_PASSWORD: rootsecret
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: pdo, pdo_mysql
+
+      - name: Create .env file
+        run: cp .env.test .env
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Create test database and grant privileges
+        run: |
+          mysql -u root -prootsecret -h 127.0.0.1 -P 3306 -e "CREATE DATABASE IF NOT EXISTS mybank_test;"
+          mysql -u root -prootsecret -h 127.0.0.1 -P 3306 -e "GRANT ALL PRIVILEGES ON mybank_test.* TO 'mybank'@'%';"
+
+      - name: Run migrations
+        run: php bin/console doctrine:migrations:migrate --env=test --no-interaction
+        env:
+          DATABASE_URL: "mysql://mybank:secret@127.0.0.1:3306/mybank"
+
+      - name: Run PHPUnit
+        run: php bin/phpunit --testdox
+        env:
+          DATABASE_URL: "mysql://mybank:secret@127.0.0.1:3306/mybank"

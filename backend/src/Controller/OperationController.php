@@ -58,10 +58,8 @@ class OperationController extends AbstractController
 
         // Optional filter: category
         if ($categoryId = $request->query->getInt("category_id")) {
-            $qb->andWhere("o.category = :category")->setParameter(
-                "category",
-                $categoryId,
-            );
+            $qb->andWhere(":category MEMBER OF o.categories")
+                ->setParameter("category", $categoryId);
         }
 
         // Optional filter: date range
@@ -104,70 +102,77 @@ class OperationController extends AbstractController
         );
     }
 
-    /**
-     * Creates a new operation for the authenticated user.
-     *
-     * Expects a JSON body with the following fields:
-     * - `label`       (string)  – human-readable description
-     * - `amount`      (float)   – positive or negative monetary value
-     * - `date`        (string)  – ISO 8601 date, e.g. "2024-06-15"
-     * - `category_id` (int)     – ID of a category owned by the authenticated user
-     *
-     * Returns 201 on success, 400 on missing/invalid fields, 404 if the
-     * category does not belong to the user.
-     *
-     * @param Request $request The incoming HTTP request
-     *
-     * @return JsonResponse
-     */
-    #[Route("", name: "create", methods: ["POST"])]
-    public function create(Request $request): JsonResponse
-    {
-        /** @var User $user */
-        $user = $this->getUser();
+/**
+ * Creates a new operation for the authenticated user.
+ *
+ * Expects a JSON body with the following fields:
+ * - `label`        (string)   – human-readable description
+ * - `amount`      (float)    – positive or negative monetary value
+ * - `date`        (string)   – ISO 8601 date, e.g. "2024-06-15"
+ * - `category_ids` (int[])   – array of category IDs owned by the authenticated user
+ *
+ * Returns 201 on success, 400 on missing/invalid fields, 404 if any
+ * category does not belong to the user.
+ *
+ * @param Request $request The incoming HTTP request
+ *
+ * @return JsonResponse
+ */
+#[Route("", name: "create", methods: ["POST"])]
+public function create(Request $request): JsonResponse
+{
+    /** @var User $user */
+    $user = $this->getUser();
 
-        $data = json_decode($request->getContent(), true);
+    $data = json_decode($request->getContent(), true);
 
-        $validationError = $this->validateOperationPayload($data);
-        if ($validationError !== null) {
-            return $this->json(
-                ["error" => $validationError],
-                Response::HTTP_BAD_REQUEST,
-            );
-        }
-
-        $category = $this->findOwnedCategoryOr404(
-            (int) $data["category_id"],
-            $user,
-        );
-
-        try {
-            $date = new \DateTimeImmutable($data["date"]);
-        } catch (\Exception) {
-            return $this->json(
-                [
-                    "error" =>
-                        "Invalid date format. Expected ISO 8601, e.g. 2024-06-15.",
-                ],
-                Response::HTTP_BAD_REQUEST,
-            );
-        }
-
-        $operation = new Operation();
-        $operation->setLabel($data["label"]);
-        $operation->setAmount((float) $data["amount"]);
-        $operation->setDate($date);
-        $operation->setCategory($category);
-        $operation->setUser($user);
-
-        $this->entityManager->persist($operation);
-        $this->entityManager->flush();
-
+    $validationError = $this->validateOperationPayload($data);
+    if ($validationError !== null) {
         return $this->json(
-            $this->serializeOperation($operation),
-            Response::HTTP_CREATED,
+            ["error" => $validationError],
+            Response::HTTP_BAD_REQUEST,
         );
     }
+
+    $categoryIds = is_array($data["category_ids"])
+        ? array_map("intval", $data["category_ids"])
+        : [(int) $data["category_ids"]];
+
+    $categories = [];
+    foreach ($categoryIds as $categoryId) {
+        $categories[] = $this->findOwnedCategoryOr404($categoryId, $user);
+    }
+
+    try {
+        $date = new \DateTimeImmutable($data["date"]);
+    } catch (\Exception) {
+        return $this->json(
+            [
+                "error" =>
+                    "Invalid date format. Expected ISO 8601, e.g. 2024-06-15.",
+            ],
+            Response::HTTP_BAD_REQUEST,
+        );
+    }
+
+    $operation = new Operation();
+    $operation->setLabel($data["label"]);
+    $operation->setAmount((float) $data["amount"]);
+    $operation->setDate($date);
+    $operation->setUser($user);
+
+    foreach ($categories as $category) {
+        $operation->addCategory($category);
+    }
+
+    $this->entityManager->persist($operation);
+    $this->entityManager->flush();
+
+    return $this->json(
+        $this->serializeOperation($operation),
+        Response::HTTP_CREATED,
+    );
+}
 
     /**
      * Returns a summary of the authenticated user's operations.
@@ -235,73 +240,83 @@ class OperationController extends AbstractController
         return $this->json($this->serializeOperation($operation));
     }
 
-    /**
-     * Fully or partially updates an existing operation.
-     *
-     * All fields are optional for PATCH requests; omitted fields retain their
-     * current values. For PUT requests all fields should be supplied.
-     *
-     * Updatable fields: `label`, `amount`, `date`, `category_id`.
-     *
-     * Returns 404 if the operation or the target category does not belong to the user.
-     * Returns 400 on invalid field values.
-     *
-     * @param Request $request The incoming HTTP request
-     * @param int     $id      The operation ID
-     *
-     * @return JsonResponse
-     */
-    #[
-        Route(
-            "/{id}",
-            name: "update",
-            methods: ["PUT", "PATCH"],
-            requirements: ["id" => "\d+"],
-        ),
-    ]
-    public function update(Request $request, int $id): JsonResponse
-    {
-        /** @var User $user */
-        $user = $this->getUser();
+/**
+ * Fully or partially updates an existing operation.
+ *
+ * All fields are optional for PATCH requests; omitted fields retain their
+ * current values. For PUT requests all fields should be supplied.
+ *
+ * Updatable fields: `label`, `amount`, `date`, `category_ids`.
+ *
+ * Returns 404 if the operation or the target category does not belong to the user.
+ * Returns 400 on invalid field values.
+ *
+ * @param Request $request The incoming HTTP request
+ * @param int     $id      The operation ID
+ *
+ * @return JsonResponse
+ */
+#[
+    Route(
+        "/{id}",
+        name: "update",
+        methods: ["PUT", "PATCH"],
+        requirements: ["id" => "\d+"],
+    ),
+]
+public function update(Request $request, int $id): JsonResponse
+{
+    /** @var User $user */
+    $user = $this->getUser();
 
-        $operation = $this->findOwnedOperationOr404($id);
+    $operation = $this->findOwnedOperationOr404($id);
 
-        $data = json_decode($request->getContent(), true);
+    $data = json_decode($request->getContent(), true);
 
-        if (isset($data["label"])) {
-            $operation->setLabel($data["label"]);
-        }
-
-        if (isset($data["amount"])) {
-            $operation->setAmount((float) $data["amount"]);
-        }
-
-        if (isset($data["date"])) {
-            try {
-                $operation->setDate(new \DateTimeImmutable($data["date"]));
-            } catch (\Exception) {
-                return $this->json(
-                    [
-                        "error" =>
-                            "Invalid date format. Expected ISO 8601, e.g. 2024-06-15.",
-                    ],
-                    Response::HTTP_BAD_REQUEST,
-                );
-            }
-        }
-
-        if (isset($data["category_id"])) {
-            $category = $this->findOwnedCategoryOr404(
-                (int) $data["category_id"],
-                $user,
-            );
-            $operation->setCategory($category);
-        }
-
-        $this->entityManager->flush();
-
-        return $this->json($this->serializeOperation($operation));
+    if (isset($data["label"])) {
+        $operation->setLabel($data["label"]);
     }
+
+    if (isset($data["amount"])) {
+        $operation->setAmount((float) $data["amount"]);
+    }
+
+    if (isset($data["date"])) {
+        try {
+            $operation->setDate(new \DateTimeImmutable($data["date"]));
+        } catch (\Exception) {
+            return $this->json(
+                [
+                    "error" =>
+                        "Invalid date format. Expected ISO 8601, e.g. 2024-06-15.",
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
+    }
+
+    if (isset($data["category_ids"])) {
+        if (!is_array($data["category_ids"])) {
+            return $this->json(
+                ["error" => "category_ids must be an array."],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
+
+        foreach ($operation->getCategories()->getValues() as $category) {
+            $operation->removeCategory($category);
+        }
+
+        foreach ($data["category_ids"] as $categoryId) {
+            $category = $this->findOwnedCategoryOr404((int) $categoryId, $user);
+            $operation->addCategory($category);
+        }
+    }
+
+    $this->entityManager->flush();
+
+    return $this->json($this->serializeOperation($operation));
+}
 
     /**
      * Deletes an operation owned by the authenticated user.
@@ -360,8 +375,18 @@ class OperationController extends AbstractController
             return "Date is required.";
         }
 
-        if (empty($data["category_id"]) || !is_numeric($data["category_id"])) {
-            return "A valid category_id is required.";
+        if (empty($data["category_ids"])) {
+            return "At least one category_ids is required.";
+        }
+
+        if (!is_array($data["category_ids"])) {
+            return "category_ids must be an array.";
+        }
+
+        foreach ($data["category_ids"] as $id) {
+            if (!is_numeric($id)) {
+                return "category_ids must contain only numeric values.";
+            }
         }
 
         return null;
@@ -431,7 +456,7 @@ class OperationController extends AbstractController
      *   label: string|null,
      *   amount: float|null,
      *   date: string,
-     *   category: array{id: int|null, title: string|null}
+     *   categories: array{id: int, title: string}[]
      * }
      */
     private function serializeOperation(Operation $operation): array
@@ -441,10 +466,10 @@ class OperationController extends AbstractController
             "label" => $operation->getLabel(),
             "amount" => $operation->getAmount(),
             "date" => $operation->getDate()?->format("Y-m-d"),
-            "category" => [
-                "id" => $operation->getCategory()?->getId(),
-                "title" => $operation->getCategory()?->getTitle(),
-            ],
+            "categories" => array_map(
+                fn($c) => ["id" => $c->getId(), "title" => $c->getTitle()],
+                $operation->getCategories()->getValues(),
+            ),
         ];
     }
 }

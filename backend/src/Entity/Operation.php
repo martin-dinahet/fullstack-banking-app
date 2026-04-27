@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OperationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OperationRepository::class)]
@@ -22,13 +24,20 @@ class Operation
     #[ORM\Column]
     private ?\DateTimeImmutable $date = null;
 
-    #[ORM\ManyToOne(inversedBy: "operations")]
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: "operations")]
+    #[ORM\JoinTable(name: "operation_categories")]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Category $category = null;
+    #[ORM\InverseJoinColumn(nullable: false)]
+    private Collection $categories;
 
     #[ORM\ManyToOne(inversedBy: "operations")]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -71,14 +80,26 @@ class Operation
         return $this;
     }
 
-    public function getCategory(): ?Category
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategories(): Collection
     {
-        return $this->category;
+        return $this->categories;
     }
 
-    public function setCategory(?Category $category): static
+    public function addCategory(Category $category): static
     {
-        $this->category = $category;
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): static
+    {
+        $this->categories->removeElement($category);
 
         return $this;
     }

@@ -18,10 +18,10 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-  /**
-   * @var Collection<int, Operation>
-   */
-    #[ORM\OneToMany(targetEntity: Operation::class, mappedBy: "category")]
+/**
+ * @var Collection<int, Operation>
+ */
+    #[ORM\ManyToMany(targetEntity: Operation::class, mappedBy: "categories")]
     private Collection $operations;
 
     #[ORM\ManyToOne(inversedBy: "categories")]
@@ -73,7 +73,7 @@ class Category
     {
         if (!$this->operations->contains($operation)) {
             $this->operations->add($operation);
-            $operation->setCategory($this);
+            $operation->addCategory($this);
         }
 
         return $this;
@@ -82,9 +82,7 @@ class Category
     public function removeOperation(Operation $operation): static
     {
         if ($this->operations->removeElement($operation)) {
-            if ($operation->getCategory() === $this) {
-                $operation->setCategory(null);
-            }
+            $operation->removeCategory($this);
         }
 
         return $this;

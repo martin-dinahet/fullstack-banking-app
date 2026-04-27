@@ -3,8 +3,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { ThemeProvider } from "@/components/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/lib/auth-context";
 import { queryClient } from "@/lib/query-client";
 import { AppLayout } from "./components/app-layout";
@@ -12,7 +12,6 @@ import { IndexPage } from "./pages/index-page";
 import { LoginPage } from "./pages/login-page";
 import { SignUpPage } from "./pages/sign-up-page";
 import "@/globals.css";
-import { DashboardPage } from "./pages/dashboard-page";
 
 // biome-ignore lint/style/noNonNullAssertion: <>
 createRoot(document.getElementById("root")!).render(

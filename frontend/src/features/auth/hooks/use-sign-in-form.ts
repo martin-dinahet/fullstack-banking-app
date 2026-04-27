@@ -7,8 +7,9 @@ import { handle } from "@/lib/handle";
 import { parseFormData } from "../utils";
 import { signInEmail } from "../api/auth.api";
 import type { LoginResponse } from "../api/auth.api";
-import { userKeys } from "./use-me";
+
 import { queryClient } from "@/lib/query-client";
+import { userKeys } from "./use-me";
 import { setAuthToken } from "@/lib/api-fetch";
 
 export const useSignInForm = () => {
@@ -40,8 +41,11 @@ export const useSignInForm = () => {
         setAuthToken(result.data.token);
       }
 
-      toast.success("Logged in successfully");
+      queryClient.removeQueries({ queryKey: ["operations"] });
+      queryClient.removeQueries({ queryKey: ["categories"] });
+      queryClient.removeQueries({ queryKey: ["operations-summary"] });
       queryClient.invalidateQueries({ queryKey: userKeys.me() });
+      toast.success("Logged in successfully");
       navigate("/");
     });
   };

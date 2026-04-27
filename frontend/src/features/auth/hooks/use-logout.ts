@@ -10,6 +10,9 @@ export function useLogout() {
   return useMutation({
     mutationFn: fetchLogout,
     onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ["operations"] });
+      queryClient.removeQueries({ queryKey: ["categories"] });
+      queryClient.removeQueries({ queryKey: ["operations-summary"] });
       queryClient.setQueryData(userKeys.me(), null);
       navigate("/auth/login");
     },

@@ -1,6 +1,6 @@
+import { useCategories } from "@/features/categories/hooks/use-categories";
 import { useOperations } from "@/features/operations/hooks/use-operations";
 import { useOperationsSummary } from "@/features/operations/hooks/use-operations-summary";
-import { useCategories } from "@/features/categories/hooks/use-categories";
 
 export function useDashboardData() {
   const summaryQuery = useOperationsSummary();

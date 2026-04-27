@@ -1,5 +1,5 @@
-import { createContext, useContext, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { createContext, type ReactNode, useContext } from "react";
 import { fetchMe } from "../features/auth/api/auth.api";
 import { userKeys } from "../features/auth/hooks";
 

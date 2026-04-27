@@ -24,9 +24,7 @@ describe("DashboardGrid", () => {
     },
   ];
 
-  const mockCategories: Category[] = [
-    { id: 1, title: "Food", operationCount: 10 },
-  ];
+  const mockCategories: Category[] = [{ id: 1, title: "Food", operationCount: 10 }];
 
   it("shows skeleton while loading", () => {
     renderWithProviders(
@@ -38,7 +36,7 @@ describe("DashboardGrid", () => {
         isError={false}
         onAddTransaction={vi.fn()}
         onRetry={vi.fn()}
-      />
+      />,
     );
     expect(screen.getByTestId("dashboard-skeleton")).toBeInTheDocument();
   });
@@ -53,7 +51,7 @@ describe("DashboardGrid", () => {
         isError={true}
         onAddTransaction={vi.fn()}
         onRetry={vi.fn()}
-      />
+      />,
     );
     expect(screen.getByText(/failed to load/i)).toBeInTheDocument();
   });
@@ -69,7 +67,7 @@ describe("DashboardGrid", () => {
         isError={true}
         onAddTransaction={vi.fn()}
         onRetry={onRetry}
-      />
+      />,
     );
     await userEvent.click(screen.getByRole("button", { name: /retry/i }));
     expect(onRetry).toHaveBeenCalledOnce();
@@ -85,7 +83,7 @@ describe("DashboardGrid", () => {
         isError={false}
         onAddTransaction={vi.fn()}
         onRetry={vi.fn()}
-      />
+      />,
     );
     expect(screen.getByText("Net Balance")).toBeInTheDocument();
     expect(screen.getByText("$2,500.00")).toBeInTheDocument();
@@ -101,7 +99,7 @@ describe("DashboardGrid", () => {
         isError={false}
         onAddTransaction={vi.fn()}
         onRetry={vi.fn()}
-      />
+      />,
     );
     expect(screen.getByText("Quick Actions")).toBeInTheDocument();
     expect(screen.getByText("10")).toBeInTheDocument();
@@ -117,7 +115,7 @@ describe("DashboardGrid", () => {
         isError={false}
         onAddTransaction={vi.fn()}
         onRetry={vi.fn()}
-      />
+      />,
     );
     expect(screen.getByText("Recent Transactions")).toBeInTheDocument();
   });
@@ -132,7 +130,7 @@ describe("DashboardGrid", () => {
         isError={false}
         onAddTransaction={vi.fn()}
         onRetry={vi.fn()}
-      />
+      />,
     );
     expect(screen.getByText("Categories")).toBeInTheDocument();
   });

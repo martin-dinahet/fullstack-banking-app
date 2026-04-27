@@ -2,13 +2,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { IconArrowDown, IconArrowUp, IconX, IconPlus } from "@tabler/icons-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -23,11 +17,7 @@ interface AddTransactionDialogProps {
   categories: Category[];
 }
 
-export function AddTransactionDialog({
-  open,
-  onOpenChange,
-  categories,
-}: AddTransactionDialogProps) {
+export function AddTransactionDialog({ open, onOpenChange, categories }: AddTransactionDialogProps) {
   const queryClient = useQueryClient();
   const [type, setType] = useState<"income" | "expense">("expense");
   const [formData, setFormData] = useState({
@@ -118,9 +108,7 @@ export function AddTransactionDialog({
   };
 
   const selectedCategories = categories.filter((c) => formData.category_ids.includes(c.id));
-  const filteredCategories = categories.filter((c) =>
-    c.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCategories = categories.filter((c) => c.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const handleCreateCategory = () => {
     const title = formData.newCategory.trim();
@@ -133,9 +121,7 @@ export function AddTransactionDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Add Transaction</DialogTitle>
-          <DialogDescription>
-            Record a new income or expense transaction.
-          </DialogDescription>
+          <DialogDescription>Record a new income or expense transaction.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -175,18 +161,14 @@ export function AddTransactionDialog({
               id="label"
               placeholder="e.g., Grocery shopping"
               value={formData.label}
-              onChange={(e) =>
-                setFormData({ ...formData, label: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, label: e.target.value })}
             />
           </Field>
 
           <Field>
             <FieldLabel htmlFor="amount">Amount</FieldLabel>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                $
-              </span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
               <Input
                 id="amount"
                 type="number"
@@ -195,9 +177,7 @@ export function AddTransactionDialog({
                 placeholder="0.00"
                 className="pl-7"
                 value={formData.amount}
-                onChange={(e) =>
-                  setFormData({ ...formData, amount: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               />
             </div>
           </Field>
@@ -208,9 +188,7 @@ export function AddTransactionDialog({
               id="date"
               type="date"
               value={formData.date}
-              onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
             />
           </Field>
 
@@ -257,9 +235,8 @@ export function AddTransactionDialog({
             </div>
 
             {searchQuery &&
-              !categories.some(
-                (c) => c.title.toLowerCase() === searchQuery.toLowerCase()
-              ) && !showNewCategory && (
+              !categories.some((c) => c.title.toLowerCase() === searchQuery.toLowerCase()) &&
+              !showNewCategory && (
                 <Button
                   type="button"
                   variant="ghost"
@@ -280,17 +257,13 @@ export function AddTransactionDialog({
                 <Input
                   placeholder="New category name"
                   value={formData.newCategory}
-                  onChange={(e) =>
-                    setFormData({ ...formData, newCategory: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, newCategory: e.target.value })}
                 />
                 <Button
                   type="button"
                   size="sm"
                   onClick={handleCreateCategory}
-                  disabled={
-                    !formData.newCategory.trim() || createCategoryMutation.isPending
-                  }
+                  disabled={!formData.newCategory.trim() || createCategoryMutation.isPending}
                 >
                   {createCategoryMutation.isPending ? <Spinner className="h-4 w-4" /> : "Add"}
                 </Button>
@@ -302,14 +275,8 @@ export function AddTransactionDialog({
             <Button type="button" variant="outline" onClick={handleClose}>
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={
-                operationMutation.isPending || createCategoryMutation.isPending
-              }
-            >
-              {(operationMutation.isPending ||
-                createCategoryMutation.isPending) && (
+            <Button type="submit" disabled={operationMutation.isPending || createCategoryMutation.isPending}>
+              {(operationMutation.isPending || createCategoryMutation.isPending) && (
                 <Spinner data-icon="inline-start" />
               )}
               Add Transaction

@@ -1,6 +1,6 @@
 import type { FC } from "react";
-import { SignUpForm } from "../features/auth/components/sign-up-form";
 import { GuestGuard } from "@/lib/guards";
+import { SignUpForm } from "../features/auth/components/sign-up-form";
 
 export const SignUpPage: FC = () => {
   return (

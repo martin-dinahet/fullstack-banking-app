@@ -7,7 +7,7 @@ export function DashboardSkeleton() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="lg:col-span-2 overflow-hidden">
           <div className="relative px-6 pt-8 pb-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent" />
             <div className="relative">
               <Skeleton className="h-3 w-24" />
               <Skeleton className="mt-2 h-12 w-48" />
@@ -39,10 +39,7 @@ export function DashboardSkeleton() {
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             {Array.from({ length: 5 }).map((_, idx) => (
-              <Skeleton
-                key={`transactions-skeleton-${idx}`}
-                className="h-16 w-full rounded-lg"
-              />
+              <Skeleton key={`transactions-skeleton-${idx}`} className="h-16 w-full rounded-lg" />
             ))}
           </CardContent>
         </Card>

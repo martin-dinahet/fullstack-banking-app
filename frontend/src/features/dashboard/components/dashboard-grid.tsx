@@ -57,9 +57,7 @@ export function DashboardGrid({
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold">Recent Transactions</CardTitle>
-              <span className="text-xs text-muted-foreground">
-                {recentOperations.length} transactions
-              </span>
+              <span className="text-xs text-muted-foreground">{recentOperations.length} transactions</span>
             </div>
           </CardHeader>
           <CardContent>

@@ -1,4 +1,4 @@
-import { IconArrowUp, IconArrowDown } from "@tabler/icons-react";
+import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
 import { Card } from "@/components/ui/card";
 import type { OperationsSummaryResponse } from "@/features/operations/api/operations.api";
 
@@ -20,11 +20,9 @@ export function BalanceSummaryCard({ summary, isLoading }: BalanceSummaryCardPro
     return (
       <Card className="lg:col-span-2 overflow-hidden">
         <div className="relative px-6 pt-8 pb-6">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent" />
           <div className="relative">
-            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Net Balance
-            </span>
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Net Balance</span>
             <div className="mt-2 h-12 w-48 animate-pulse rounded-md bg-muted" />
           </div>
         </div>
@@ -37,17 +35,11 @@ export function BalanceSummaryCard({ summary, isLoading }: BalanceSummaryCardPro
 
   return (
     <Card className="lg:col-span-2 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-transparent to-secondary/5" />
+      <div className="absolute inset-0 bg-linear-to-br from-primary/8 via-transparent to-secondary/5" />
       <div className="relative px-6 pt-8 pb-6">
-        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          Net Balance
-        </span>
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Net Balance</span>
         <div className="mt-2">
-          <span
-            className={`text-5xl font-bold tracking-tight ${
-              isPositive ? "text-primary" : "text-destructive"
-            }`}
-          >
+          <span className={`text-5xl font-bold tracking-tight ${isPositive ? "text-primary" : "text-destructive"}`}>
             {formatCurrency(balance)}
           </span>
         </div>
@@ -72,9 +64,7 @@ export function BalanceSummaryCard({ summary, isLoading }: BalanceSummaryCardPro
               </div>
               <span className="text-xs font-medium text-muted-foreground">Expenses</span>
             </div>
-            <span className="text-xl font-bold text-destructive">
-              {formatCurrency(summary?.total_expense ?? 0)}
-            </span>
+            <span className="text-xl font-bold text-destructive">{formatCurrency(summary?.total_expense ?? 0)}</span>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
-import { IconPlus, IconClipboardList } from "@tabler/icons-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { IconClipboardList, IconPlus } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Category } from "@/features/categories/types";
 
 interface QuickStatsProps {
@@ -9,20 +9,15 @@ interface QuickStatsProps {
 }
 
 export function QuickStats({ categories, onAddTransaction }: QuickStatsProps) {
-  const totalTransactions = categories.reduce(
-    (sum, cat) => sum + (cat.operationCount ?? 0),
-    0
-  );
+  const totalTransactions = categories.reduce((sum, cat) => sum + (cat.operationCount ?? 0), 0);
 
   return (
     <Card className="overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-br from-secondary/10 to-transparent" />
       <div className="relative">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center justify-between">
-            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Quick Actions
-            </span>
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Quick Actions</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">

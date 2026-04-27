@@ -21,10 +21,7 @@ export function CategoryBreakdown({ categories, isLoading }: CategoryBreakdownPr
     .sort((a, b) => (b.operationCount ?? 0) - (a.operationCount ?? 0))
     .slice(0, 5);
 
-  const totalCount = topCategories.reduce(
-    (sum, cat) => sum + (cat.operationCount ?? 0),
-    0
-  );
+  const totalCount = topCategories.reduce((sum, cat) => sum + (cat.operationCount ?? 0), 0);
 
   if (isLoading) {
     return (
@@ -55,9 +52,7 @@ export function CategoryBreakdown({ categories, isLoading }: CategoryBreakdownPr
           <IconTag className="h-8 w-8 text-muted-foreground" />
         </div>
         <p className="text-sm text-muted-foreground">No categories yet</p>
-        <p className="mt-1 text-xs text-muted-foreground/70">
-          Categories will appear here
-        </p>
+        <p className="mt-1 text-xs text-muted-foreground/70">Categories will appear here</p>
       </div>
     );
   }
@@ -65,8 +60,7 @@ export function CategoryBreakdown({ categories, isLoading }: CategoryBreakdownPr
   return (
     <div className="flex flex-col gap-2">
       {topCategories.map((category, index) => {
-        const percentage =
-          totalCount > 0 ? ((category.operationCount ?? 0) / totalCount) * 100 : 0;
+        const percentage = totalCount > 0 ? ((category.operationCount ?? 0) / totalCount) * 100 : 0;
         const colors = categoryColors[index % categoryColors.length];
 
         return (

@@ -52,9 +52,7 @@ export function TransactionList({ transactions, isLoading }: TransactionListProp
           <IconClipboardList className="h-8 w-8 text-muted-foreground" />
         </div>
         <p className="text-sm text-muted-foreground">No transactions yet</p>
-        <p className="mt-1 text-xs text-muted-foreground/70">
-          Your recent transactions will appear here
-        </p>
+        <p className="mt-1 text-xs text-muted-foreground/70">Your recent transactions will appear here</p>
       </div>
     );
   }
@@ -69,9 +67,7 @@ export function TransactionList({ transactions, isLoading }: TransactionListProp
           <div className="flex items-center gap-3">
             <div
               className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                transaction.amount >= 0
-                  ? "bg-green-500/10 text-green-600"
-                  : "bg-destructive/10 text-destructive"
+                transaction.amount >= 0 ? "bg-green-500/10 text-green-600" : "bg-destructive/10 text-destructive"
               }`}
             >
               {transaction.amount >= 0 ? (
@@ -88,17 +84,13 @@ export function TransactionList({ transactions, isLoading }: TransactionListProp
                     {cat.title}
                   </Badge>
                 ))}
-                <span className="text-xs text-muted-foreground">
-                  {formatDate(transaction.date)}
-                </span>
+                <span className="text-xs text-muted-foreground">{formatDate(transaction.date)}</span>
               </div>
             </div>
           </div>
           <span
             className={`text-sm font-bold ${
-              transaction.amount >= 0
-                ? "text-green-600 dark:text-green-500"
-                : "text-destructive"
+              transaction.amount >= 0 ? "text-green-600 dark:text-green-500" : "text-destructive"
             }`}
           >
             {transaction.amount >= 0 ? "+" : "-"}

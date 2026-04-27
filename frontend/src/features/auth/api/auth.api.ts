@@ -1,8 +1,7 @@
 import { fetchClient } from "@/lib/api-fetch";
 
-export interface RegisterRequest {
-  email: string;
-  password: string;
+export interface LoginResponse {
+  token: string;
 }
 
 export interface RegisterResponse {
@@ -10,39 +9,36 @@ export interface RegisterResponse {
   id: number;
 }
 
-export async function registerUser(body: RegisterRequest): Promise<RegisterResponse> {
-  return fetchClient<RegisterResponse>("/api/register", {
-    method: "POST",
-    body: JSON.stringify(body),
-  });
-}
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  token: string;
-}
-
-export async function loginUser(body: LoginRequest): Promise<LoginResponse> {
-  return fetchClient<LoginResponse>("/api/login", {
-    method: "POST",
-    body: JSON.stringify(body),
-  });
-}
-
-export interface MeResponse {
+export interface UserResponse {
   id: number;
   email: string;
   roles: string[];
 }
 
-export async function fetchMe(): Promise<MeResponse> {
-  return fetchClient<MeResponse>("/api/me");
+export async function fetchLogin(email: string, password: string): Promise<LoginResponse> {
+  return fetchClient<LoginResponse>("/api/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
 }
 
-export async function logoutUser() {
-  return fetchClient<void>("/api/logout", { method: "POST" });
+export const signInEmail = fetchLogin;
+
+export async function fetchRegister(email: string, password: string): Promise<RegisterResponse> {
+  return fetchClient<RegisterResponse>("/api/register", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export const signUpEmail = fetchRegister;
+
+export async function fetchMe(): Promise<UserResponse> {
+  return fetchClient<UserResponse>("/api/me");
+}
+
+export async function fetchLogout(): Promise<void> {
+  return fetchClient<void>("/api/logout", {
+    method: "POST",
+  });
 }

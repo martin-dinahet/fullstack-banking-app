@@ -4,13 +4,13 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/lib/auth-context";
 import { queryClient } from "@/lib/query-client";
-import { AuthGuard } from "./features/auth/components/auth-guard";
-import { GuestGuard } from "./features/auth/components/guest-guard";
+import { AppLayout } from "./components/app-layout";
 import { IndexPage } from "./pages/index-page";
 import { LoginPage } from "./pages/login-page";
-import { RegisterPage } from "./pages/register-page";
-import { RootLayout } from "./root-layout";
+import { SignUpPage } from "./pages/sign-up-page";
 import "@/globals.css";
 import { DashboardPage } from "./pages/dashboard-page";
 
@@ -21,21 +21,16 @@ createRoot(document.getElementById("root")!).render(
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <TooltipProvider>
           <BrowserRouter>
-            <Routes>
-              <Route element={<RootLayout />}>
-                {/* Public pages */}
-                <Route index element={<IndexPage />} />
-                {/* Auth pages (logged in users cannot go) */}
-                <Route element={<GuestGuard />}>
-                  <Route path="/auth/login" element={<LoginPage />} />
-                  <Route path="/auth/register" element={<RegisterPage />} />
+            <AuthProvider>
+              <Routes>
+                <Route path="/sign-in" element={<LoginPage />} />
+                <Route path="/sign-up" element={<SignUpPage />} />
+                <Route element={<AppLayout />}>
+                  <Route path="/" element={<IndexPage />} />
                 </Route>
-                {/* Protected pages (non-authenticated users cannot go */}
-                <Route element={<AuthGuard />}>
-                  <Route path="/dashboard" element={<DashboardPage />} />
-                </Route>
-              </Route>
-            </Routes>
+              </Routes>
+              <Toaster />
+            </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>
       </ThemeProvider>

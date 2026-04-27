@@ -1,8 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
-import { type RegisterRequest, registerUser } from "../api/auth.api";
+import { fetchRegister } from "../api/auth.api";
+import { authKeys } from "./use-login";
 
 export function useRegister() {
   return useMutation({
-    mutationFn: (data: RegisterRequest) => registerUser(data),
+    mutationKey: [...authKeys.all, "register"] as const,
+    mutationFn: ({ email, password }: { email: string; password: string }) => fetchRegister(email, password),
   });
 }

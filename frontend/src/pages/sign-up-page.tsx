@@ -1,12 +1,12 @@
 import type { FC } from "react";
+import { SignUpForm } from "../features/auth/components/sign-up-form";
 import { GuestGuard } from "@/lib/guards";
-import { LoginForm } from "../features/auth/components/login-form";
 
-export const LoginPage: FC = () => {
+export const SignUpPage: FC = () => {
   return (
     <GuestGuard>
       <div className="min-h-screen font-sans p-6 flex items-center justify-center">
-        <LoginForm />
+        <SignUpForm />
       </div>
     </GuestGuard>
   );

@@ -105,6 +105,19 @@ class AuthController extends AbstractController
     }
 
     /**
+     * Logout the authenticated user.
+     *
+     * Returns 204 No Content on success.
+     *
+     * @return JsonResponse
+     */
+    #[Route("/logout", name: "logout", methods: ["POST"])]
+    public function logout(): JsonResponse
+    {
+        return $this->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * Returns the profile of the currently authenticated user.
      *
      * This route is protected by the security firewall.

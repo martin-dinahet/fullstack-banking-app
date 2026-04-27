@@ -4,9 +4,13 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/lib/auth-context";
 import { queryClient } from "@/lib/query-client";
+import { AppLayout } from "./components/app-layout";
 import { IndexPage } from "./pages/index-page";
-import { RootLayout } from "./root-layout";
+import { LoginPage } from "./pages/login-page";
+import { SignUpPage } from "./pages/sign-up-page";
 import "@/globals.css";
 
 // biome-ignore lint/style/noNonNullAssertion: <>
@@ -16,11 +20,16 @@ createRoot(document.getElementById("root")!).render(
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <TooltipProvider>
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<RootLayout />}>
-                <Route index element={<IndexPage />} />
-              </Route>
-            </Routes>
+            <AuthProvider>
+              <Routes>
+                <Route path="/sign-in" element={<LoginPage />} />
+                <Route path="/sign-up" element={<SignUpPage />} />
+                <Route element={<AppLayout />}>
+                  <Route path="/" element={<IndexPage />} />
+                </Route>
+              </Routes>
+              <Toaster />
+            </AuthProvider>
           </BrowserRouter>
         </TooltipProvider>
       </ThemeProvider>

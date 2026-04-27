@@ -5,7 +5,6 @@ import { authKeys } from "./use-login";
 export function useRegister() {
   return useMutation({
     mutationKey: [...authKeys.all, "register"] as const,
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      fetchRegister(email, password),
+    mutationFn: ({ email, password }: { email: string; password: string }) => fetchRegister(email, password),
   });
 }

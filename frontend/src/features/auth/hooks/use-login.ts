@@ -8,7 +8,6 @@ export const authKeys = {
 export function useLogin() {
   return useMutation({
     mutationKey: [...authKeys.all, "login"] as const,
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      fetchLogin(email, password),
+    mutationFn: ({ email, password }: { email: string; password: string }) => fetchLogin(email, password),
   });
 }

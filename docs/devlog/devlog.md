@@ -3,6 +3,23 @@
 ## Avancées quotidiennes
 
 ### Lundi 27/04/2026
+- ajout de la page dashboard avec gestion des transactions:
+  - liste des opérations avec catégorie et montant
+  - ajout de catégories aux opérations (relation many-to-many)
+  - formulaire d'ajout d'opération
+  - affichage du solde total
+- refactorisation de la structure API:
+  - extraction des types API dans des fichiers types.ts centralisés par feature
+  - renommage de category_id en category_ids pour supporter plusieurs catégories
+- corrections et améliorations:
+  - vidage du cache des requêtes lors du login/logout
+  - mise à jour immédiate de l'état d'authentification via setQueryData
+  - gestion de la réponse 204 du logout
+  - rechargement de la page après déconnexion
+  - ajout de messages d'erreur appropriés
+- ajout des tests pour les composants frontend
+- suppression d'une page inutilisée
+- formatage du code avec Biome
 - implémentation du système d'authentification complet:
   - ajout des endpoints API pour login, register et logout
   - création des hooks et composants pour les formulaires de connexion et inscription

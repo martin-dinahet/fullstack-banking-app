@@ -30,6 +30,7 @@ jobs:
             --exclude ".env.production" \
             --exclude "backend/var" \
             --exclude "backend/vendor" \
+            --exclude "deploy/reverse-proxy/.env" \
             --exclude "deploy/runtime" \
             --exclude "frontend/node_modules" \
             ./ "$APP_DIR/"

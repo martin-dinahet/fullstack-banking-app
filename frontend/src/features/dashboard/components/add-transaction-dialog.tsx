@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { IconArrowDown, IconArrowUp, IconX, IconPlus } from "@tabler/icons-react";
@@ -8,27 +8,63 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { createOperation } from "@/features/operations/api/operations.api";
+import { useUpdateOperation } from "@/features/operations/hooks/use-update-operation";
 import { createCategory } from "@/features/categories/api/categories.api";
 import type { Category } from "@/features/categories/types";
+import type { CreateOperationResponse } from "@/features/operations/api/operations.api";
 
 interface AddTransactionDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   categories: Category[];
+  transaction?: CreateOperationResponse | null;
 }
 
-export function AddTransactionDialog({ open, onOpenChange, categories }: AddTransactionDialogProps) {
+const today = () => new Date().toISOString().split("T")[0];
+
+export function AddTransactionDialog({ open, onOpenChange, categories, transaction }: AddTransactionDialogProps) {
   const queryClient = useQueryClient();
+  const isEditing = Boolean(transaction);
   const [type, setType] = useState<"income" | "expense">("expense");
   const [formData, setFormData] = useState({
     label: "",
     amount: "",
-    date: new Date().toISOString().split("T")[0],
+    date: today(),
     category_ids: [] as number[],
     newCategory: "",
   });
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const updateOperationMutation = useUpdateOperation();
+
+  useEffect(() => {
+    if (!open) return;
+
+    if (transaction) {
+      setType(transaction.amount >= 0 ? "income" : "expense");
+      setFormData({
+        label: transaction.label,
+        amount: Math.abs(transaction.amount).toString(),
+        date: transaction.date.split("T")[0],
+        category_ids: transaction.categories.map((category) => category.id),
+        newCategory: "",
+      });
+      setShowNewCategory(false);
+      setSearchQuery("");
+      return;
+    }
+
+    setType("expense");
+    setFormData({
+      label: "",
+      amount: "",
+      date: today(),
+      category_ids: [],
+      newCategory: "",
+    });
+    setShowNewCategory(false);
+    setSearchQuery("");
+  }, [open, transaction]);
 
   const createCategoryMutation = useMutation({
     mutationFn: createCategory,
@@ -61,7 +97,7 @@ export function AddTransactionDialog({ open, onOpenChange, categories }: AddTran
     setFormData({
       label: "",
       amount: "",
-      date: new Date().toISOString().split("T")[0],
+      date: today(),
       category_ids: [],
       newCategory: "",
     });
@@ -69,6 +105,15 @@ export function AddTransactionDialog({ open, onOpenChange, categories }: AddTran
     setSearchQuery("");
     setType("expense");
     onOpenChange(false);
+  };
+
+  const handleDialogOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      onOpenChange(true);
+      return;
+    }
+
+    handleClose();
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -90,12 +135,32 @@ export function AddTransactionDialog({ open, onOpenChange, categories }: AddTran
       return;
     }
 
-    operationMutation.mutate({
+    const payload = {
       label: formData.label.trim(),
       amount: type === "expense" ? -Math.abs(amount) : Math.abs(amount),
       date: formData.date,
       category_ids: formData.category_ids,
-    });
+    };
+
+    if (transaction) {
+      updateOperationMutation.mutate(
+        { id: transaction.id, ...payload },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["operations"] });
+            queryClient.invalidateQueries({ queryKey: ["categories"] });
+            toast.success("Transaction updated successfully");
+            handleClose();
+          },
+          onError: () => {
+            toast.error("Failed to update transaction");
+          },
+        },
+      );
+      return;
+    }
+
+    operationMutation.mutate(payload);
   };
 
   const toggleCategory = (categoryId: number) => {
@@ -117,11 +182,13 @@ export function AddTransactionDialog({ open, onOpenChange, categories }: AddTran
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add Transaction</DialogTitle>
-          <DialogDescription>Record a new income or expense transaction.</DialogDescription>
+          <DialogTitle>{isEditing ? "Edit Transaction" : "Add Transaction"}</DialogTitle>
+          <DialogDescription>
+            {isEditing ? "Update this income or expense transaction." : "Record a new income or expense transaction."}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -275,11 +342,14 @@ export function AddTransactionDialog({ open, onOpenChange, categories }: AddTran
             <Button type="button" variant="outline" onClick={handleClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={operationMutation.isPending || createCategoryMutation.isPending}>
-              {(operationMutation.isPending || createCategoryMutation.isPending) && (
+            <Button
+              type="submit"
+              disabled={operationMutation.isPending || updateOperationMutation.isPending || createCategoryMutation.isPending}
+            >
+              {(operationMutation.isPending || updateOperationMutation.isPending || createCategoryMutation.isPending) && (
                 <Spinner data-icon="inline-start" />
               )}
-              Add Transaction
+              {isEditing ? "Save Changes" : "Add Transaction"}
             </Button>
           </div>
         </form>

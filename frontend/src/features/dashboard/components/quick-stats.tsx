@@ -12,8 +12,8 @@ export function QuickStats({ categories, onAddTransaction }: QuickStatsProps) {
   const totalTransactions = categories.reduce((sum, cat) => sum + (cat.operationCount ?? 0), 0);
 
   return (
-    <Card className="overflow-hidden">
-      <div className="absolute inset-0 bg-linear-to-br from-secondary/10 to-transparent" />
+    <Card className="relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-secondary/10 to-transparent" />
       <div className="relative">
         <CardHeader className="pb-2">
           <CardTitle className="flex items-center justify-between">

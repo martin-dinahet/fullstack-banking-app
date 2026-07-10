@@ -18,9 +18,9 @@ function formatCurrency(amount: number): string {
 export function BalanceSummaryCard({ summary, isLoading }: BalanceSummaryCardProps) {
   if (isLoading) {
     return (
-      <Card className="lg:col-span-2 overflow-hidden">
+      <Card className="relative overflow-hidden lg:col-span-2">
         <div className="relative px-6 pt-8 pb-6">
-          <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent" />
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-primary/5 to-transparent" />
           <div className="relative">
             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Net Balance</span>
             <div className="mt-2 h-12 w-48 animate-pulse rounded-md bg-muted" />
@@ -34,8 +34,8 @@ export function BalanceSummaryCard({ summary, isLoading }: BalanceSummaryCardPro
   const isPositive = balance >= 0;
 
   return (
-    <Card className="lg:col-span-2 overflow-hidden">
-      <div className="absolute inset-0 bg-linear-to-br from-primary/8 via-transparent to-secondary/5" />
+    <Card className="relative overflow-hidden lg:col-span-2">
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-primary/8 via-transparent to-secondary/5" />
       <div className="relative px-6 pt-8 pb-6">
         <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Net Balance</span>
         <div className="mt-2">

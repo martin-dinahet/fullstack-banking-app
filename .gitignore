@@ -1,0 +1,21 @@
+.DS_Store
+
+# Local environment files
+.env
+.env.*
+!.env.example
+!.env.production.example
+!backend/.env
+!backend/.env.dev
+!backend/.env.test
+
+# Runtime data generated on the VPS
+deploy/runtime/
+deploy/reverse-proxy/acme.json
+
+# Dependencies and build output
+node_modules/
+vendor/
+dist/
+var/cache/
+var/log/

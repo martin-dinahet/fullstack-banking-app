@@ -1,0 +1,39 @@
+name: MyBank CD
+
+on:
+  workflow_run:
+    workflows: ["MyBank CI"]
+    branches: ["main"]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to VPS
+    runs-on: [self-hosted, linux, mybank-vps]
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy application
+        run: |
+          set -euo pipefail
+
+          APP_DIR="/opt/apps/mybank"
+          test -f "$APP_DIR/.env.production"
+          test -f "$APP_DIR/deploy/reverse-proxy/.env"
+
+          rsync -az --delete \
+            --exclude ".git" \
+            --exclude ".env.production" \
+            --exclude "backend/var" \
+            --exclude "backend/vendor" \
+            --exclude "deploy/runtime" \
+            --exclude "frontend/node_modules" \
+            ./ "$APP_DIR/"
+
+          cd "$APP_DIR"
+          chmod +x scripts/deploy.sh
+          ./scripts/deploy.sh

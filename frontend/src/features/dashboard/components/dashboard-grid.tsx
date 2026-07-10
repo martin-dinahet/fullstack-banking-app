@@ -61,7 +61,7 @@ export function DashboardGrid({
             </div>
           </CardHeader>
           <CardContent>
-            <TransactionList transactions={recentOperations} isLoading={isLoading} />
+            <TransactionList transactions={recentOperations} categories={categories} isLoading={isLoading} />
           </CardContent>
         </Card>
 

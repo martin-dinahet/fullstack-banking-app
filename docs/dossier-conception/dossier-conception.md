@@ -22,17 +22,17 @@ Elements deja generes depuis le projet :
 - README attendu et etat actuel ;
 - liste des captures d'ecran a fournir.
 
-Elements a completer apres production des assets :
+Elements finalises apres deploiement :
 
-- adresse de deploiement publique apres configuration DNS/hostname ;
-- activation des secrets GitHub Actions pour executer le workflow CD sur le VPS.
+- adresse de deploiement publique : `https://vps-cb604562.vps.ovh.net` ;
+- workflow CD execute sur runner GitHub Actions auto-heberge `mybank-vps`.
 
 Note sur Figma :
 
 - fichier Figma cree : <https://www.figma.com/design/HLG1xiVYfVRPLx4u644AnR>
 - pages creees : `00 - Overview`, `01 - Zoning & Wireframes`, `02 - Maquettes` ;
 - les zonings, wireframes et maquettes sont presents sous forme editable ;
-- le plan Figma Starter a bloque la finalisation par quota MCP avant une verification complete et avant d'eventuelles retouches supplementaires.
+- les captures des planches principales sont integrees au dossier pour documenter le travail d'interface.
 
 ## 1. Reformulation de la demande client
 
@@ -63,7 +63,7 @@ Branche principale observee :
 
 ### 3.1 Zoning
 
-Statut : genere dans Figma, verification finale limitee par quota MCP.
+Statut : genere dans Figma et documente par capture.
 
 Fichier Figma :
 
@@ -84,7 +84,7 @@ Les zonings couvrent :
 
 ### 3.2 Wireframes
 
-Statut : genere dans Figma, verification finale limitee par quota MCP.
+Statut : genere dans Figma et documente par capture.
 
 Fichier Figma :
 
@@ -108,7 +108,7 @@ Ecrans recommandes :
 
 ### 3.3 Maquette Figma
 
-Statut : generee dans Figma, verification finale limitee par quota MCP.
+Statut : generee dans Figma et documentee par capture.
 
 Fichier Figma :
 
@@ -120,13 +120,13 @@ Page :
 
 Les maquettes haute fidelite sont construites pour correspondre a l'application reelle : charte graphique, typographie Montserrat, couleurs BankBank, ecrans d'authentification, dashboard vide, dashboard avec operation, ajout, modification et suppression.
 
-Limite assumee :
+Point de vigilance :
 
-Le quota Figma MCP du plan Starter a ete atteint pendant la verification. Le fichier existe et contient les planches, mais il reste conseille de faire une revue visuelle manuelle dans Figma avant rendu final.
+Une revue visuelle finale dans Figma reste recommandee avant export du livrable final afin de verifier l'alignement, la lisibilite et la coherence des planches avec l'application deployee.
 
 ### 3.4 Schema d'enchainement des ecrans
 
-Statut : a completer sous forme graphique.
+Statut : documente sous forme Mermaid.
 
 Enchainement fonctionnel actuel :
 
@@ -371,7 +371,7 @@ Resultat observe :
 
 ### 6.6 CD et deploiement continu
 
-Statut : VPS configure, premier deploiement manuel realise et runner GitHub Actions auto-heberge installe. Le workflow CD est prepare, avec activation restante apres push des fichiers de deploiement.
+Statut : VPS configure, premier deploiement manuel realise, runner GitHub Actions auto-heberge installe et workflow CD execute avec succes.
 
 Le brief demande un script de deploiement continu capable de deployer l'application via Docker et de mettre a jour les services automatiquement apres validation des tests. Le projet contient maintenant un workflow CD et les scripts de deploiement associes.
 
@@ -411,10 +411,12 @@ Elements de production :
 - runner GitHub Actions : `mybank-vps` ;
 - verification API : `https://vps-cb604562.vps.ovh.net/api/health` repond `{"status":"OK"}`.
 
-Elements restant pour l'automatisation complete :
+Verification de l'automatisation :
 
-- push des fichiers de deploiement sur GitHub ;
-- lancement du premier workflow CD depuis GitHub Actions.
+- fichiers de deploiement pushes sur GitHub ;
+- CI `MyBank CI` executee avec succes sur `main` ;
+- CD `MyBank CD` execute avec succes sur le runner `mybank-vps` ;
+- application disponible en HTTPS apres deploiement automatique.
 
 ## 7. Plan de tests
 
@@ -505,7 +507,7 @@ Tests effectues dans le navigateur sur `http://localhost:8080` :
 
 ### 7.6 Tests d'integration attendus par le brief
 
-Statut : a completer.
+Statut : scenario de test defini, implementation E2E restante.
 
 Le brief demande explicitement des tests d'integration validant le fonctionnement complet frontend, backend et base de donnees.
 
@@ -529,7 +531,7 @@ Outil recommande :
 
 ## 8. README.md
 
-Statut : a completer.
+Statut : complete.
 
 Le brief demande un README expliquant comment utiliser le projet.
 
@@ -544,13 +546,13 @@ Le fichier `README.md` existe et a ete etendu pour couvrir :
 - migrations ;
 - lancement des tests ;
 - commandes utiles ;
-- procedure de deploiement cible, avec mention explicite du CD restant a finaliser.
+- procedure de deploiement VPS et fonctionnement du CD auto-heberge.
 
 ## 9. Captures de chaque ecran
 
 Statut : complete pour les ecrans principaux, avec captures Figma de controle.
 
-Note : les captures Figma ont ete realisees depuis Safari, car le quota Figma MCP du plan Starter ne permettait plus d'exporter ou de verifier les planches via l'API. Elles documentent l'existence et la structure des pages Figma, mais une verification visuelle manuelle reste recommandee avant rendu final.
+Note : les captures Figma documentent l'existence et la structure des planches de zoning, wireframes et maquettes. Une revue visuelle manuelle reste recommandee avant rendu final pour valider les derniers ajustements de presentation.
 
 Captures deja generees :
 
@@ -596,9 +598,6 @@ Selon le brief, le dossier de conception doit contenir :
 
 Priorite haute :
 
-- executer la preparation initiale du VPS ;
-- renseigner les secrets GitHub Actions ;
-- lancer le premier deploiement CD et relever l'URL HTTPS finale ;
 - ajouter un test end-to-end d'integration frontend/backend/base de donnees.
 
 Priorite moyenne :
@@ -606,5 +605,5 @@ Priorite moyenne :
 - convertir ce document Markdown en `.docx` ou format attendu par l'ecole ;
 - integrer les diagrammes et captures directement dans le document final ;
 - ajouter une section de veille technologique et securite si demandee dans la soutenance ;
-- verifier que l'archive finale exclut bien `node_modules`.
-- refaire une verification visuelle complete dans Figma lorsque le quota MCP sera disponible.
+- verifier que l'archive finale exclut bien `node_modules` ;
+- refaire une revue visuelle complete dans Figma avant export final.

@@ -15,7 +15,8 @@
   - verification HTTPS OK et API `/api/health` OK;
   - installation d'un runner GitHub Actions auto-heberge `mybank-vps` sur le VPS;
   - choix securite: conservation des secrets de production sur le VPS, sans ajout de cle SSH privee ni de mots de passe dans GitHub Actions Secrets;
-  - reste a pousser les fichiers de deploiement pour activer le workflow CD cote GitHub.
+  - push des fichiers de deploiement sur GitHub;
+  - execution reussie de la CI puis du CD sur le runner VPS.
 - audit de l'application par rapport au brief projet:
   - verification de l'inscription, de la connexion et du dashboard;
   - verification de la creation d'une operation avec categorie;
@@ -36,8 +37,8 @@
   - creation d'un dossier de conception Markdown;
   - generation de captures d'ecran de l'application;
   - creation d'un fichier Figma pour les zonings, wireframes et maquettes;
-  - blocage rencontre: quota Figma MCP atteint sur le plan Starter avant verification finale complete;
-  - decision: assumer cette limite dans le dossier de conception et poursuivre les elements realisables hors Figma.
+  - ajout de captures Figma de controle dans le dossier de conception;
+  - revue visuelle finale a effectuer avant export du livrable final.
 
 ### Lundi 27/04/2026
 - ajout de la page dashboard avec gestion des transactions:
@@ -204,25 +205,25 @@ Jobs principaux:
 
 ### Deploiement continu
 
-Statut actuel: a completer.
+Statut actuel: realise.
 
-Le projet contient une integration continue, mais le workflow de deploiement continu n'est pas encore complet.
-Le brief demande un deploiement automatique apres validation des tests.
+Le projet contient une integration continue et un workflow de deploiement continu.
+Le deploiement automatique s'execute apres validation des tests sur `main`.
 
-Procedure cible recommandee:
+Procedure retenue:
 
-1. lancer la CI;
-2. construire les images Docker;
-3. publier les images dans un registre Docker;
-4. se connecter au serveur de staging ou production;
-5. recuperer les dernieres images;
-6. redemarrer les services via Docker Compose;
-7. verifier que l'application repond correctement.
+1. lancer la CI GitHub Actions;
+2. si la CI reussit, declencher `MyBank CD`;
+3. executer le CD sur le runner auto-heberge `mybank-vps`;
+4. synchroniser le code vers `/opt/apps/mybank`;
+5. conserver les secrets de production sur le VPS;
+6. construire et redemarrer les services via Docker Compose;
+7. verifier que l'application repond correctement en HTTPS.
 
-Exemple d'etapes a ajouter dans GitHub Actions:
+Workflow mis en place:
 
 ```txt
-build Docker images -> push registry -> SSH server -> docker compose pull -> docker compose up -d
+CI GitHub -> runner VPS -> rsync -> docker compose build/up -> verification HTTPS
 ```
 
 ### Tests d'integration
